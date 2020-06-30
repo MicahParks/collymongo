@@ -1,5 +1,5 @@
 // Package collymongo is a MongoDB storage backend for the Colly framework.
-
+//
 // Example:
 //   package main
 //
