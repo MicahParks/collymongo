@@ -1,4 +1,4 @@
-// collymongo is a MongoDB storage backend for the Colly framework.
+// Package collymongo is a MongoDB storage backend for the Colly framework.
 package collymongo
 
 import (
