@@ -11,7 +11,7 @@ import (
 type request struct {
 
 	// RequestID is the ID of a request that has already been preformed.
-	RequestID uint64 `bson:"requestID"`
+	RequestID int64 `bson:"requestID"`
 }
 
 // IsVisited follows the implementation of the storage.Storage interface. It checks if a request has been preformed yet.
@@ -23,7 +23,10 @@ func (m *CollyMongo) IsVisited(requestID uint64) (visited bool, err error) {
 
 	// Filter for request ID matching the given.
 	r := &request{
-		RequestID: requestID,
+
+		// bson doesn't support uint64 and this will misrepresent the number that's in the database, but happens on both
+		// ends of the code so it effectively works.
+		RequestID: int64(requestID),
 	}
 
 	// Check to see if MongoDB has this request ID. Decode the response to a struct.
@@ -52,7 +55,10 @@ func (m *CollyMongo) Visited(requestID uint64) (err error) {
 
 	// The request ID as a struct.
 	r := &request{
-		RequestID: requestID,
+
+		// bson doesn't support uint64 and this will misrepresent the number that's in the database, but happens on both
+		// ends of the code so it effectively works.
+		RequestID: int64(requestID),
 	}
 
 	// Insert the request ID into MongoDB.
