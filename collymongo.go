@@ -1,6 +1,7 @@
 // Package collymongo is a MongoDB storage backend for the Colly framework.
+
 // Example:
-//  package main
+//   package main
 //
 //  import (
 //  	"fmt"
@@ -17,7 +18,7 @@
 //  	c := colly.NewCollector()
 //
 //  	// Create the MongoDB storage backend.
-//  	storage := &collymongo.CollyMongo{Uri: "mongodb://botsarehots.net:27017"}
+//  	storage := &collymongo.CollyMongo{Uri: "mongodb://localhost:27017"}
 //
 //  	// Set the storage backend.
 //  	if err := c.SetStorage(storage); err != nil {
@@ -40,12 +41,11 @@
 //  		fmt.Println("Visiting: " + r.URL.String())
 //  	})
 //
-//  	// Start the scraper off on the Go Colly site.
+//  	// Start the scraper on the Go Colly website.
 //  	if err := c.Visit("http://go-colly.org/"); err != nil {
 //  		log.Fatalln(err)
 //  	}
 //  }
-//
 package collymongo
 
 import (
