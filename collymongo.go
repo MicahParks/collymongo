@@ -9,6 +9,15 @@ import (
 
 const (
 
+	// defaultCookie is the default name of the collection to store the hostname cookie relationship in MongoDB.
+	defaultCookie = "cookie"
+
+	// defaultDatabase is the default name for the database to store Colly persistent data.
+	defaultDatabase = "colly"
+
+	// defaultRequest is the default name of the collection to store request IDs in MongoDB.
+	defaultRequest = "request"
+
 	// defaultWait is the amount of time to wait for a call to MongoDB if none was given by the package user.
 	defaultWait = time.Second * 10
 )
