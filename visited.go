@@ -13,7 +13,7 @@ type request struct {
 
 func (m *CollyMongo) IsVisited(requestID uint64) (visited bool, err error) {
 
-	ctx, cancel := context.WithTimeout(context.Background(), m.getWait())
+	ctx, cancel := context.WithTimeout(context.Background(), m.findWait())
 	defer cancel()
 
 	r := &request{
@@ -34,7 +34,7 @@ func (m *CollyMongo) IsVisited(requestID uint64) (visited bool, err error) {
 
 func (m *CollyMongo) Visited(requestID uint64) (err error) {
 
-	ctx, cancel := context.WithTimeout(context.Background(), m.getWait())
+	ctx, cancel := context.WithTimeout(context.Background(), m.findWait())
 	defer cancel()
 
 	r := &request{

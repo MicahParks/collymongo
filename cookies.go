@@ -12,7 +12,7 @@ type cookie struct {
 
 func (m *CollyMongo) Cookies(u *url.URL) (cookies string) {
 
-	ctx, cancel := context.WithTimeout(context.Background(), m.getWait())
+	ctx, cancel := context.WithTimeout(context.Background(), m.findWait())
 	defer cancel()
 
 	c := &cookie{
@@ -20,7 +20,7 @@ func (m *CollyMongo) Cookies(u *url.URL) (cookies string) {
 	}
 
 	if err := m.cookie.FindOne(ctx, c, m.findCookieOpts...).Decode(c); err != nil {
-		m.CookieErr = err
+		m.ErrCookie = err
 		return ""
 	}
 
@@ -29,7 +29,7 @@ func (m *CollyMongo) Cookies(u *url.URL) (cookies string) {
 
 func (m *CollyMongo) SetCookies(u *url.URL, cookies string) {
 
-	ctx, cancel := context.WithTimeout(context.Background(), m.getWait())
+	ctx, cancel := context.WithTimeout(context.Background(), m.findWait())
 	defer cancel()
 
 	c := &cookie{
@@ -38,6 +38,6 @@ func (m *CollyMongo) SetCookies(u *url.URL, cookies string) {
 	}
 
 	if _, err := m.cookie.InsertOne(ctx, c, m.insertCookieOpts...); err != nil {
-		m.CookieErr = err
+		m.ErrCookie = err
 	}
 }

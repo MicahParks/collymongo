@@ -9,15 +9,15 @@ import (
 
 func (m *CollyMongo) Init() (err error) {
 
-	if m.options == nil {
-		m.options = options.Client()
+	if m.clientOptions == nil {
+		m.clientOptions = options.Client()
 	}
 
 	if len(m.uri) != 0 {
-		m.options = m.options.ApplyURI(m.uri)
+		m.clientOptions = m.clientOptions.ApplyURI(m.uri)
 	}
 
-	if m.client, err = mongo.NewClient(m.options); err != nil {
+	if m.client, err = mongo.NewClient(m.clientOptions); err != nil {
 		return err
 	}
 
