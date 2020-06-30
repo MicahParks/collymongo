@@ -11,7 +11,7 @@ import (
 type request struct {
 
 	// RequestID is the ID of a request that has already been preformed.
-	RequestID int64 `bson:"requestID"`
+	RequestID int64 `bson:"_id"`
 }
 
 // IsVisited follows the implementation of the storage.Storage interface. It checks if a request has been preformed yet.

@@ -12,7 +12,7 @@ import (
 type cookie struct {
 
 	// Host is the hostname from the URL given by Colly.
-	Host string `bson:"host"`
+	Host string `bson:"_id"`
 
 	// Cookies is the string of cookies given by Colly.
 	Cookies string `bson:"cookie"`
