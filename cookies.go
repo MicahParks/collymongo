@@ -34,12 +34,12 @@ func (m *CollyMongo) Cookies(u *url.URL) (cookies string) {
 	// Ask MongoDB for said host's cookies. Put them into the cookie struct.
 	if err := m.cookie.FindOne(ctx, c, m.FindCookieOpts...).Decode(c); err != nil {
 
-		// Should an error occur that wasn't the lack of a host, copy it to an exported variable for the package user.
+		// Should an error occur that wasn't the fact that the hostname hasn't been seen, log it.
 		if !errors.Is(err, mongo.ErrNoDocuments) {
-			m.ErrCookie = err
+			m.log(err)
 		}
 
-		// Some error occurred.
+		// A document with this hostname was not found.
 		return ""
 	}
 
@@ -63,7 +63,7 @@ func (m *CollyMongo) SetCookies(u *url.URL, cookies string) {
 	// Insert the cookie.
 	if _, err := m.cookie.InsertOne(ctx, c, m.InsertCookieOpts...); err != nil {
 
-		// Copy the error to an exported variable for the package user.
-		m.ErrCookie = err
+		// Log the error, if present.
+		m.log(err)
 	}
 }
