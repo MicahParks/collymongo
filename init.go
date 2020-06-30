@@ -12,17 +12,17 @@ import (
 func (m *CollyMongo) Init() (err error) {
 
 	// If no client options were given, use the default.
-	if m.clientOptions == nil {
-		m.clientOptions = options.Client()
+	if m.ClientOptions == nil {
+		m.ClientOptions = options.Client()
 	}
 
 	// If a URI was given, apply it to the client options.
-	if len(m.uri) != 0 {
-		m.clientOptions = m.clientOptions.ApplyURI(m.uri)
+	if len(m.Uri) != 0 {
+		m.ClientOptions = m.ClientOptions.ApplyURI(m.Uri)
 	}
 
 	// Create the MongoDB client.
-	if m.client, err = mongo.NewClient(m.clientOptions); err != nil {
+	if m.client, err = mongo.NewClient(m.ClientOptions); err != nil {
 		return err
 	}
 
@@ -31,10 +31,10 @@ func (m *CollyMongo) Init() (err error) {
 	var cancel context.CancelFunc
 
 	// If no context timeout was given for initialization, use the default. Create the context.
-	if m.initCtxTime == 0 {
-		ctx, cancel = context.WithTimeout(context.Background(), defaultWait)
+	if m.InitCtxTime == 0 {
+		ctx, cancel = context.WithTimeout(context.Background(), DefaultWait)
 	} else {
-		ctx, cancel = context.WithTimeout(context.Background(), m.initCtxTime)
+		ctx, cancel = context.WithTimeout(context.Background(), m.InitCtxTime)
 	}
 	defer cancel()
 
@@ -44,28 +44,28 @@ func (m *CollyMongo) Init() (err error) {
 	}
 
 	// If no database name was given, use the default.
-	if len(m.databaseName) == 0 {
-		m.databaseName = defaultDatabase
+	if len(m.DatabaseName) == 0 {
+		m.DatabaseName = DefaultDatabase
 	}
 
 	// Create the database struct.
-	m.database = m.client.Database(m.databaseName, m.databaseOpts...)
+	m.database = m.client.Database(m.DatabaseName, m.DatabaseOpts...)
 
 	// If no cookie collection name was given, use the default.
-	if len(m.cookieCol) == 0 {
-		m.cookieCol = defaultCookie
+	if len(m.CookieCol) == 0 {
+		m.CookieCol = DefaultCookie
 	}
 
 	// Create the cookie collection struct.
-	m.cookie = m.database.Collection(m.cookieCol, m.cookieOpts...)
+	m.cookie = m.database.Collection(m.CookieCol, m.CookieOpts...)
 
 	// If no request collection name was give, use the default.
-	if len(m.requestCol) == 0 {
-		m.requestCol = defaultRequest
+	if len(m.RequestCol) == 0 {
+		m.RequestCol = DefaultRequest
 	}
 
 	// Create the request collection struct.
-	m.request = m.database.Collection(m.requestCol, m.requestOpts...)
+	m.request = m.database.Collection(m.RequestCol, m.RequestOpts...)
 
 	return nil
 }

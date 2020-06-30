@@ -27,7 +27,7 @@ func (m *CollyMongo) IsVisited(requestID uint64) (visited bool, err error) {
 	}
 
 	// Check to see if MongoDB has this request ID. Decode the response to a struct.
-	if err = m.request.FindOne(ctx, r, m.findRequestOpts...).Decode(r); err != nil {
+	if err = m.request.FindOne(ctx, r, m.FindRequestOpts...).Decode(r); err != nil {
 
 		// If the document wasn't found, the given ID's request has not been preformed.
 		if errors.Is(err, mongo.ErrNoDocuments) {
@@ -56,7 +56,7 @@ func (m *CollyMongo) Visited(requestID uint64) (err error) {
 	}
 
 	// Insert the request ID into MongoDB.
-	if _, err = m.request.InsertOne(ctx, r, m.insertRequestOpts...); err != nil {
+	if _, err = m.request.InsertOne(ctx, r, m.InsertRequestOpts...); err != nil {
 		return err
 	}
 

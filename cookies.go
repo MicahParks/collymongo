@@ -32,7 +32,7 @@ func (m *CollyMongo) Cookies(u *url.URL) (cookies string) {
 	}
 
 	// Ask MongoDB for said host's cookies. Put them into the cookie struct.
-	if err := m.cookie.FindOne(ctx, c, m.findCookieOpts...).Decode(c); err != nil {
+	if err := m.cookie.FindOne(ctx, c, m.FindCookieOpts...).Decode(c); err != nil {
 
 		// Should an error occur that wasn't the lack of a host, copy it to an exported variable for the package user.
 		if !errors.Is(err, mongo.ErrNoDocuments) {
@@ -61,7 +61,7 @@ func (m *CollyMongo) SetCookies(u *url.URL, cookies string) {
 	}
 
 	// Insert the cookie.
-	if _, err := m.cookie.InsertOne(ctx, c, m.insertCookieOpts...); err != nil {
+	if _, err := m.cookie.InsertOne(ctx, c, m.InsertCookieOpts...); err != nil {
 
 		// Copy the error to an exported variable for the package user.
 		m.ErrCookie = err

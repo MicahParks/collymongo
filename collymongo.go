@@ -10,102 +10,108 @@ import (
 
 const (
 
-	// defaultCookie is the default name of the collection to store the hostname cookie relationship in MongoDB.
-	defaultCookie = "cookie"
+	// DefaultCookie is the default name of the collection to store the hostname cookie relationship in MongoDB.
+	DefaultCookie = "cookie"
 
-	// defaultDatabase is the default name for the database to store Colly persistent data.
-	defaultDatabase = "colly"
+	// DefaultDatabase is the default name for the database to store Colly persistent data.
+	DefaultDatabase = "colly"
 
-	// defaultRequest is the default name of the collection to store request IDs in MongoDB.
-	defaultRequest = "request"
+	// DefaultRequest is the default name of the collection to store request IDs in MongoDB.
+	DefaultRequest = "request"
 
-	// defaultWait is the amount of time to wait for a call to MongoDB if none was given by the package user.
-	defaultWait = time.Second * 10
+	// DefaultWait is the amount of time to wait for a call to MongoDB if none was given by the package user.
+	DefaultWait = time.Second * 10
 )
 
 // CollyMongo implements the Storage interface from github.com/gocolly/colly/storage. It allows for the use of MongoDB
 // as a storage backend for Colly's host to cookie relationships and previous request IDs.
 type CollyMongo struct {
 
-	// ErrCookie allows the package user to find out why the call to MongoDB regarding cookies failed. The interface
-	// does not return an error.
-	ErrCookie error
-
 	// client is the MongoDB client.
 	client *mongo.Client
 
-	// client options are the options used to create the client for MongoDB.
-	clientOptions *options.ClientOptions
+	// ClientOptions are the options used to create the client for MongoDB.  Can safely be left blank.
+	ClientOptions *options.ClientOptions
 
 	// cookie is the collection in MongoDB used to store host to cookie relationships.
 	cookie *mongo.Collection
 
-	// cookieCol is the name of the collection in MongoDB used to store host to cookie relationships. It defaults to
-	// "cookie".
-	cookieCol string
+	// CookieCol is the name of the collection in MongoDB used to store host to cookie relationships. It defaults to
+	// "cookie".  Can safely be left blank.
+	CookieCol string
 
-	// cookieOpts are the collection options to pass to the mongo package when creating a collection struct.
-	cookieOpts []*options.CollectionOptions
+	// CookieOpts are the collection options to pass to the mongo package when creating a collection struct. Can safely
+	// left left blank.
+	CookieOpts []*options.CollectionOptions
 
 	// database is the database to store Colly's host to cookie relationships and determining if a request has already
 	// been made.
 	database *mongo.Database
 
-	// databaseName is the name of the database to store Colly's host to cookie relationships and determining if a
-	// request has already been made. It defaults to "colly".
-	databaseName string
+	// DatabaseName is the name of the database to store Colly's host to cookie relationships and determining if a
+	// request has already been made. It defaults to "colly".  Can safely be left blank.
+	DatabaseName string
 
-	// databaseOpts are the database options to pass to the mongo package when creating a database struct.
-	databaseOpts []*options.DatabaseOptions
+	// DatabaseOpts are the database options to pass to the mongo package when creating a database struct. Can safely
+	// left left blank.
+	DatabaseOpts []*options.DatabaseOptions
 
-	// findCookieOpts are the options to pass to the mongo package when finding one cookie by hostname.
-	findCookieOpts []*options.FindOneOptions
+	// ErrCookie allows the package user to find out why the call to MongoDB regarding cookies failed. The interface
+	// does not return an error.
+	ErrCookie error
 
-	// findCtxTime is the amount of time to put in the context timeout that is passed to the mongo package for finding
-	// documents.
-	findCtxTime time.Duration
+	// FindCookieOpts are the options to pass to the mongo package when finding one cookie by hostname. Can safely left
+	// left blank.
+	FindCookieOpts []*options.FindOneOptions
 
-	// findRequestOpts are the options to pass to the mongo package when finding request IDs that have already been
-	// performed.
-	findRequestOpts []*options.FindOneOptions
+	// FindCtxTime is the amount of time to put in the context timeout that is passed to the mongo package for finding
+	// documents. Defaults to 10 seconds. Can safely be left blank.
+	FindCtxTime time.Duration
 
-	// initCtxTime is the amount of time to put in the context timeout that is passed to the mongo package when
-	// initializing that database connection.
-	initCtxTime time.Duration
+	// FindRequestOpts are the options to pass to the mongo package when finding request IDs that have already been
+	// performed. Can safely be left blank.
+	FindRequestOpts []*options.FindOneOptions
 
-	// insertCookieOpts are the options to pass to the mongo package when inserting a cookie into the cookie collection.
-	insertCookieOpts []*options.InsertOneOptions
+	// InitCtxTime is the amount of time to put in the context timeout that is passed to the mongo package when
+	// initializing that database connection. Defaults to 10 seconds. Can safely be left blank.
+	InitCtxTime time.Duration
 
-	// insertCtxTime is the amount of time to put in the context timeout that is passed to the mongo package when
-	// inserting a document.
-	insertCtxTime time.Duration
+	// InsertCookieOpts are the options to pass to the mongo package when inserting a cookie into the cookie collection.
+	// Can safely be left blank.
+	InsertCookieOpts []*options.InsertOneOptions
 
-	// insertRequestOpts are the options to pass to the mongo package when inserting a request ID into the request
-	// collection.
-	insertRequestOpts []*options.InsertOneOptions
+	// InsertCtxTime is the amount of time to put in the context timeout that is passed to the mongo package when
+	// inserting a document. Defaults to 10 seconds. Can safely be left blank.
+	InsertCtxTime time.Duration
 
-	// uri is the MongoDB URI string.
-	uri string
+	// InsertRequestOpts are the options to pass to the mongo package when inserting a request ID into the request
+	// collection. Can safely be left blank.
+	InsertRequestOpts []*options.InsertOneOptions
+
+	// Uri is the MongoDB URI string. Mandatory.
+	Uri string
 
 	// request is the collection to hold previous request IDs.
 	request *mongo.Collection
 
-	// requestCol is the name of the collection in MongoDB used to store host to request IDs. It defaults to "request".
-	requestCol string
+	// RequestCol is the name of the collection in MongoDB used to store host to request IDs. It defaults to "request".
+	// Can safely be left blank.
+	RequestCol string
 
-	// requestOpts are the options to pass the mongo package when creating the request collection.
-	requestOpts []*options.CollectionOptions
+	// RequestOpts are the options to pass the mongo package when creating the request collection.  Can safely be left
+	// blank.
+	RequestOpts []*options.CollectionOptions
 }
 
 // findWait determines the proper amount of time to wait for a request to find a document in MongoDB.
 func (m *CollyMongo) findWait() time.Duration {
 
 	// Copy the user given time.
-	wait := m.findCtxTime
+	wait := m.FindCtxTime
 
 	// If that time was left zero, use the default time.
 	if wait == 0 {
-		wait = defaultWait
+		wait = DefaultWait
 	}
 
 	return wait
@@ -115,11 +121,11 @@ func (m *CollyMongo) findWait() time.Duration {
 func (m *CollyMongo) insertWait() time.Duration {
 
 	// Copy the user given time.
-	wait := m.insertCtxTime
+	wait := m.InsertCtxTime
 
 	// If that time was left zero, use the default time.
 	if wait == 0 {
-		wait = defaultWait
+		wait = DefaultWait
 	}
 
 	return wait
