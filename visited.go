@@ -3,6 +3,7 @@ package collymongo
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -63,6 +64,12 @@ func (m *CollyMongo) Visited(requestID uint64) (err error) {
 
 	// Insert the request ID into MongoDB.
 	if _, err = m.request.InsertOne(ctx, r, m.InsertRequestOpts...); err != nil {
+
+		// If it's a duplicate key, the it's already been inserted.
+		if strings.Contains(err.Error(), "duplicate key") {
+			return nil
+		}
+
 		return err
 	}
 
