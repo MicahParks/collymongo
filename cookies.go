@@ -6,6 +6,7 @@ import (
 	"net/url"
 
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 // cookie contains a hostname to cookie relationship.
@@ -60,8 +61,28 @@ func (m *CollyMongo) SetCookies(u *url.URL, cookies string) {
 		Host:    u.Host,
 	}
 
+	// Create the filter.
+	filter := &cookie{
+		Host: c.Host,
+	}
+
+	// Upsert the document should it not already be there.
+	opts := m.ReplaceCookieOpts
+	if opts == nil {
+		opts = make([]*options.FindOneAndReplaceOptions, 0)
+	}
+	opts = append(opts, options.FindOneAndReplace().SetUpsert(true))
+
+	// The old document before it was replaced.
+	var replacement *cookie
+
 	// Insert the cookie.
-	if _, err := m.cookie.InsertOne(ctx, c, m.InsertCookieOpts...); err != nil {
+	if err := m.cookie.FindOneAndReplace(ctx, c, filter, opts...).Decode(replacement); err != nil {
+
+		// If the document was upserted, ignore the error.
+		if errors.Is(err, mongo.ErrNoDocuments) {
+			return
+		}
 
 		// Log the error, if present.
 		m.log(err)

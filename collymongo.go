@@ -129,9 +129,9 @@ type CollyMongo struct {
 	// initializing that database connection. Defaults to 10 seconds. Can safely be left blank.
 	InitCtxTime time.Duration
 
-	// InsertCookieOpts are the options to pass to the mongo package when inserting a cookie into the cookie collection.
-	// Can safely be left blank.
-	InsertCookieOpts []*options.InsertOneOptions
+	// ReplaceCookieOpts are the options to pass to the mongo package when inserting a cookie into the cookie
+	// collection. Can safely be left blank.
+	ReplaceCookieOpts []*options.FindOneAndReplaceOptions
 
 	// InsertCtxTime is the amount of time to put in the context timeout that is passed to the mongo package when
 	// inserting a document. Defaults to 10 seconds. Can safely be left blank.
