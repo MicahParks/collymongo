@@ -1,4 +1,4 @@
-module gitlab.com/MicahParks/collymongo
+module github.com/MicahParks/collymongo
 
 go 1.14
 
