@@ -6,7 +6,7 @@ import (
 
 	"github.com/gocolly/colly/v2"
 
-	"gitlab.com/MicahParks/collymongo"
+	"github.com/MicahParks/collymongo"
 )
 
 func main() {
